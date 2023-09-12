@@ -1,7 +1,7 @@
 ﻿using SimuladorBanco;
 using System;
 
-namespace controleContas
+namespace SimuladorBanco
 {
     public class Conta
     {

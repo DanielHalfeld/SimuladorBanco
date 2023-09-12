@@ -34,7 +34,7 @@ namespace SimuladorBanco
         public Conta(long numero, Agencia agencia, Banco banco, decimal saldoInicial)
         {
             this.Numero = numero;
-            this.Saldo = saldoInicial; // Não verifica mais o saldo inicial
+            this.Saldo = saldoInicial;
             this.Titular = null;
             this.agencia = agencia;
             this.banco = banco;

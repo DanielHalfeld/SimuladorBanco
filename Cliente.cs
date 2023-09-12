@@ -27,13 +27,13 @@ namespace SimuladorBanco
             }
         }
 
-        public string CalcularIdadeRomana()
+        public string Romano()
         {
             int idade = this.Idade;
             if (idade <= 0)
                 return "Desconhecida";
 
-            string romano = string.Empty;
+            string romano = "";
 
             string[] unidades = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
             string[] dezenas = { "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };

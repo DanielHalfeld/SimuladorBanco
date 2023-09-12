@@ -1,6 +1,6 @@
-﻿using controleContas;
+﻿using SimuladorBanco;
 using System;
-using static controleContas.Conta;
+using static SimuladorBanco.Conta;
 
 namespace SimuladorBanco
 {
@@ -14,21 +14,21 @@ namespace SimuladorBanco
         private Agencia agencia2 = null;
         private Banco banco = null;
 
-        public void Run()
+        public void Exec()
         {
             while (true)
             {
                 Console.WriteLine("Menu Inicial:");
-                Console.WriteLine("1 - Inserir informações das Contas");
+                Console.WriteLine("1 - Criar contas");
                 Console.WriteLine("0 - Sair");
 
-                int escolhaInicial = Convert.ToInt32(Console.ReadLine());
+                int escolhaInicial = int.Parse(Console.ReadLine());
 
                 switch (escolhaInicial)
                 {
                     case 1:
-                        InserirInformacoesDasContas();
-                        ExibirMenuPrincipal();
+                        Informacoes();
+                        Menu();
                         break;
                     case 0:
                         Console.WriteLine("Saindo do programa.");
@@ -40,7 +40,7 @@ namespace SimuladorBanco
             }
         }
 
-        private void ExibirMenuPrincipal()
+        private void Menu()
         {
             bool contasInseridas = true;
 
@@ -52,11 +52,11 @@ namespace SimuladorBanco
                 Console.WriteLine("4 - Dados do Cliente 2");
                 Console.WriteLine("5 - Saque da Conta 1");
                 Console.WriteLine("6 - Saque da Conta 2");
-                Console.WriteLine("7 - Adicionar dinheiro à Conta 1");
-                Console.WriteLine("8 - Adicionar dinheiro à Conta 2");
+                Console.WriteLine("7 - Depósito da Conta 1");
+                Console.WriteLine("8 - Depósito da Conta 2");
                 Console.WriteLine("0 - Sair");
 
-                int escolha = Convert.ToInt32(Console.ReadLine());
+                int escolha = int.Parse(Console.ReadLine());
 
                 switch (escolha)
                 {
@@ -74,7 +74,7 @@ namespace SimuladorBanco
                     case 3:
                         if (contasInseridas)
                         {
-                            MostrarDadosCliente(cliente1, conta1);
+                            MostrarDadosCliente(cliente1, conta1, banco, agencia1);
                         }
                         else
                         {
@@ -84,7 +84,7 @@ namespace SimuladorBanco
                     case 4:
                         if (contasInseridas)
                         {
-                            MostrarDadosCliente(cliente2, conta2);
+                            MostrarDadosCliente(cliente2, conta2, banco, agencia2);
                         }
                         else
                         {
@@ -141,7 +141,7 @@ namespace SimuladorBanco
             }
         }
 
-        private void InserirInformacoesDasContas()
+        private void Informacoes()
         {
             Console.WriteLine("Informe o nome do cliente 1:");
             string nomeCliente1 = Console.ReadLine();
@@ -234,15 +234,15 @@ namespace SimuladorBanco
             cliente2 = new Cliente(nomeCliente2, idadeCliente2, cpfCliente2);
         }
 
-        private void MostrarDadosCliente(Cliente cliente, Conta conta)
+        private void MostrarDadosCliente(Cliente cliente, Conta conta, Banco banco, Agencia agencia)
         {
             Console.WriteLine($"Dados do cliente: {cliente.Nome}, CPF: {cliente.CPF}, Saldo: R${conta.Saldo}");
             Console.WriteLine($"Idade em decimal: {cliente.Idade} anos");
-            Console.WriteLine($"Idade em romanos: {cliente.CalcularIdadeRomana()}");
+            Console.WriteLine($"Idade em romanos: {cliente.Romano()}");
             Console.WriteLine($"Número da Conta: {conta.Numero}");
-            Console.WriteLine($"Número da Agência: {conta.Agencia.Numero}");
-            Console.WriteLine($"Nome do Banco: {conta.Banco.Nome}");
-            Console.WriteLine($"Número do Banco: {conta.Banco.Numero}");
+            Console.WriteLine($"Número da Agência: {agencia.Numero}");
+            Console.WriteLine($"Nome do Banco: {banco.Nome}");
+            Console.WriteLine($"Número do Banco: {banco.Numero}");
         }
 
         private void RealizarSaque(Conta conta)
@@ -260,11 +260,10 @@ namespace SimuladorBanco
             conta.AtualizarSaldo(valorAdicionar);
             Console.WriteLine($"Saldo da Conta {conta.Numero} após adição: {conta.Saldo}");
         }
-
         public static void Main(string[] args)
         {
-            Program program = new Program();
-            program.Run();
+            Program exec = new Program();
+            exec.Exec();
         }
     }
 }

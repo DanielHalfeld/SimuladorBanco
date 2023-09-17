@@ -107,60 +107,54 @@ class Program
                 Console.WriteLine("2 - Mostrar dados do cliente");
                 Console.WriteLine("3 - Fazer saque");
                 Console.WriteLine("4 - Fazer depósito");
+                Console.WriteLine("5 - Fazer transferência");
                 Console.WriteLine("0 - Sair");
 
                 Int64 escolha = Int64.Parse(Console.ReadLine());
 
-                switch (escolha)
-                {
-                    case 1:
-                        if (contasInseridas == true)
-                        {
+                if (contasInseridas == true) {
+                    switch (escolha)
+                    {
+                        case 1:
 
                             decimal saldoTotal = CalcularSaldoTotal(contasList);
                             Console.WriteLine($"Saldo total geral: {saldoTotal}");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Por favor, insira as informações das contas primeiro.");
-                        }
-                        break;
-                    case 2:
-                        if (contasInseridas == true)
-                        {
+                            break;
+
+                        case 2:
+
                             MostrarDadosCliente();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Por favor, insira as informações das contas primeiro.");
-                        }
-                        break;
-                    case 3:
-                        if (contasInseridas == true)
-                        {
+                            break;
+
+                        case 3:
+
                             RealizarSaque();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Por favor, insira as informações das contas primeiro.");
-                        }
-                        break;
-                    case 4:
-                        if (contasInseridas == true)
-                        {
-                            AdicionarDinheiro();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Por favor, insira as informações das contas primeiro.");
-                        }
-                        break;
-                    case 0:
-                        Console.WriteLine("Saindo do programa.");
-                        return;
-                    default:
-                        Console.WriteLine("Opção inválida.");
-                        break;
+                            break;
+
+                        case 4:
+                            
+                            Deposito();
+                            break;
+
+                        case 5:
+
+                            Transferencia();
+                            break;
+
+                        case 0:
+
+                            Console.WriteLine("Saindo do programa.");
+                            return;
+
+                        default:
+
+                            Console.WriteLine("Opção inválida.");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Por favor, insira as informações das contas primeiro.");
                 }
             }
         }
@@ -169,7 +163,7 @@ class Program
         {
             Console.WriteLine($"Qual dos clientes você deseja as informações? (de 0 até {cont - 1})");
             int cli = int.Parse(Console.ReadLine());
-            if ( cli < 0 && cli >= cont ) {
+            if ( cli < 0 || cli >= cont ) {
                 Console.WriteLine("Esse cliente não existe.");
             }
             else {
@@ -187,7 +181,7 @@ class Program
         {
             Console.WriteLine($"Qual dos clientes deseja realizar o saque? (de 0 até {cont - 1})");
             int cli = int.Parse(Console.ReadLine());
-            if (cli < 0 && cli >= cont)
+            if (cli < 0 || cli >= cont)
             {
                 Console.WriteLine("Esse cliente não existe.");
             }
@@ -201,11 +195,11 @@ class Program
             }
         }
 
-        void AdicionarDinheiro()
+        void Deposito()
         {
             Console.WriteLine($"Qual dos clientes deseja realizar o depósito? (de 0 até {cont - 1})");
             int cli = int.Parse(Console.ReadLine());
-            if (cli < 0 && cli >= cont)
+            if (cli < 0 || cli >= cont)
             {
                 Console.WriteLine("Esse cliente não existe.");
             }
@@ -213,8 +207,28 @@ class Program
             {
                 Console.WriteLine($"Digite o valor a ser adicionado à Conta {contasList[cli].Numero}:");
                 decimal valorAdicionar = Convert.ToDecimal(Console.ReadLine());
-                contasList[cli].AtualizarSaldo(valorAdicionar);
+                contasList[cli].Deposito(valorAdicionar);
                 Console.WriteLine($"Saldo da Conta {contasList[cli].Numero} após adição: {contasList[cli].Saldo}");
+            }
+        }
+
+        void Transferencia()
+        {
+            Console.WriteLine($"Digite qual dos clientes que deseja realizar a transferência: (de 0 até {cont - 1})");
+            int transf = int.Parse(Console.ReadLine());
+            Console.WriteLine($"Digite o cliente que receberá a transferência: (de 0 até {cont - 1})");
+            int receb = int.Parse(Console.ReadLine());
+            if (transf != receb && transf >= 0 && receb >= 0 && transf <= cont && receb <= cont)
+            {
+                Console.WriteLine($"Digite o valor a ser transferido da conta {contasList[transf].Numero} para a conta {contasList[receb].Numero}: ");
+                decimal valor = Convert.ToDecimal(Console.ReadLine());
+                contasList[transf].Saque(valor);
+                contasList[receb].Deposito(valor);
+                Console.WriteLine($"Saldo da Conta {contasList[receb].Numero} após saque: {contasList[receb].Saldo}");
+            }
+            else
+            {
+                Console.WriteLine("Digite as informações corretamente.");
             }
         }
     }

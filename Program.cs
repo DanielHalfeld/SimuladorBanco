@@ -1,20 +1,21 @@
 ﻿using SimuladorBanco;
 using System;
 using static SimuladorBanco.Conta;
-
-namespace SimuladorBanco
+class Program
 {
-    class Program
+     static void Main(string[] args)
     {
-        private Conta conta1 = null;
-        private Conta conta2 = null;
-        private Cliente cliente1 = null;
-        private Cliente cliente2 = null;
-        private Agencia agencia1 = null;
-        private Agencia agencia2 = null;
-        private Banco banco = null;
+        Console.WriteLine("Informe a quantidade de contas que deseja criar: ");
 
-        public void Exec()
+        int cont = int.Parse(Console.ReadLine());
+
+        Conta[] contasList = new Conta[cont];
+        Cliente[] clienteList = new Cliente[cont];
+
+        bool contasInseridas = false;
+        Exec();
+
+        void Exec()
         {
             while (true)
             {
@@ -40,30 +41,83 @@ namespace SimuladorBanco
             }
         }
 
-        private void Menu()
+        void Informacoes()
         {
-            bool contasInseridas = true;
+            for (int x = 0; x < cont; x++)
+            {
 
+                Console.WriteLine("Informe o nome do cliente:");
+                string nomeCliente = Console.ReadLine();
+                Console.WriteLine("Informe a idade do cliente (maior que 18 anos):");
+                int idadeCliente = Convert.ToInt32(Console.ReadLine());
+
+                if (idadeCliente <= 18)
+                {
+                    Console.WriteLine("A idade do cliente deve ser maior que 18 anos.");
+                    return;
+                }
+
+                Console.WriteLine("Informe o CPF do cliente (11 dígitos):");
+                string cpfCliente = Console.ReadLine();
+
+                if (cpfCliente.Length != 11)
+                {
+                    Console.WriteLine("O CPF do cliente deve ter 11 dígitos.");
+                    return;
+                }
+
+                Console.WriteLine("Informe o número da agência :");
+                int numeroAgencia = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Informe o CEP da agência:");
+                string cepAgencia = Console.ReadLine();
+                Console.WriteLine("Informe o telefone da agência:");
+                string telefoneAgencia = Console.ReadLine();
+
+                Agencia agencia = new Agencia(numeroAgencia, cepAgencia, telefoneAgencia); 
+
+                Console.WriteLine("Informe o número da conta:");
+                long numeroConta = Convert.ToInt64(Console.ReadLine());
+                Console.WriteLine("Informe o saldo inicial da conta (maior que 10):");
+                decimal saldoConta = Convert.ToDecimal(Console.ReadLine());
+
+                if (saldoConta <= 10)
+                {
+                    Console.WriteLine("O saldo da conta deve ser maior que 10.");
+                    return;
+                }
+
+                Console.WriteLine("Informe o nome do banco:");
+                string nomeBanco = Console.ReadLine();
+                Console.WriteLine("Informe o número do banco:");
+                int numeroBanco = Convert.ToInt32(Console.ReadLine());
+                Banco banco = new Banco(nomeBanco, numeroBanco);
+
+                contasList[x] = new Conta(numeroConta, agencia, banco, saldoConta);
+                clienteList[x] = new Cliente(nomeCliente, idadeCliente, cpfCliente);
+                contasInseridas = true;
+            }
+        }
+
+        void Menu()
+        {
             while (true)
             {
                 Console.WriteLine("Menu Principal:");
-                Console.WriteLine("2 - Saldo Total Geral");
-                Console.WriteLine("3 - Dados do Cliente 1");
-                Console.WriteLine("4 - Dados do Cliente 2");
-                Console.WriteLine("5 - Saque da Conta 1");
-                Console.WriteLine("6 - Saque da Conta 2");
-                Console.WriteLine("7 - Depósito da Conta 1");
-                Console.WriteLine("8 - Depósito da Conta 2");
+                Console.WriteLine("1 - Saldo Total Geral");
+                Console.WriteLine("2 - Mostrar dados do cliente");
+                Console.WriteLine("3 - Fazer saque");
+                Console.WriteLine("4 - Fazer depósito");
                 Console.WriteLine("0 - Sair");
 
-                int escolha = int.Parse(Console.ReadLine());
+                Int64 escolha = Int64.Parse(Console.ReadLine());
 
                 switch (escolha)
                 {
-                    case 2:
-                        if (contasInseridas)
+                    case 1:
+                        if (contasInseridas == true)
                         {
-                            decimal saldoTotal = Conta.CalcularSaldoTotal(conta1, conta2);
+
+                            decimal saldoTotal = CalcularSaldoTotal(contasList);
                             Console.WriteLine($"Saldo total geral: {saldoTotal}");
                         }
                         else
@@ -71,10 +125,20 @@ namespace SimuladorBanco
                             Console.WriteLine("Por favor, insira as informações das contas primeiro.");
                         }
                         break;
-                    case 3:
-                        if (contasInseridas)
+                    case 2:
+                        if (contasInseridas == true)
                         {
-                            MostrarDadosCliente(cliente1, conta1, banco, agencia1);
+                            MostrarDadosCliente();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Por favor, insira as informações das contas primeiro.");
+                        }
+                        break;
+                    case 3:
+                        if (contasInseridas == true)
+                        {
+                            RealizarSaque();
                         }
                         else
                         {
@@ -82,53 +146,13 @@ namespace SimuladorBanco
                         }
                         break;
                     case 4:
-                        if (contasInseridas)
+                        if (contasInseridas == true)
                         {
-                            MostrarDadosCliente(cliente2, conta2, banco, agencia2);
+                            AdicionarDinheiro();
                         }
                         else
                         {
                             Console.WriteLine("Por favor, insira as informações das contas primeiro.");
-                        }
-                        break;
-                    case 5:
-                        if (conta1 != null)
-                        {
-                            RealizarSaque(conta1);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Conta 1 não está definida.");
-                        }
-                        break;
-                    case 6:
-                        if (conta2 != null)
-                        {
-                            RealizarSaque(conta2);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Conta 2 não está definida.");
-                        }
-                        break;
-                    case 7:
-                        if (conta1 != null)
-                        {
-                            AdicionarDinheiro(conta1);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Conta 1 não está definida.");
-                        }
-                        break;
-                    case 8:
-                        if (conta2 != null)
-                        {
-                            AdicionarDinheiro(conta2);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Conta 2 não está definida.");
                         }
                         break;
                     case 0:
@@ -141,129 +165,57 @@ namespace SimuladorBanco
             }
         }
 
-        private void Informacoes()
+        void MostrarDadosCliente()
         {
-            Console.WriteLine("Informe o nome do cliente 1:");
-            string nomeCliente1 = Console.ReadLine();
-            Console.WriteLine("Informe a idade do cliente 1 (maior que 18 anos):");
-            int idadeCliente1 = Convert.ToInt32(Console.ReadLine());
-
-            if (idadeCliente1 <= 18)
-            {
-                Console.WriteLine("A idade do cliente 1 deve ser maior que 18 anos.");
-                return;
+            Console.WriteLine($"Qual dos clientes você deseja as informações? (de 0 até {cont - 1})");
+            int cli = int.Parse(Console.ReadLine());
+            if ( cli < 0 && cli >= cont ) {
+                Console.WriteLine("Esse cliente não existe.");
             }
-
-            Console.WriteLine("Informe o CPF do cliente 1 (11 dígitos):");
-            string cpfCliente1 = Console.ReadLine();
-
-            if (cpfCliente1.Length != 11)
-            {
-                Console.WriteLine("O CPF do cliente 1 deve ter 11 dígitos.");
-                return;
+            else {
+                Console.WriteLine($"Nome: {clienteList[cli].Nome}, CPF: {clienteList[cli].CPF}, Saldo: R${contasList[cli].Saldo}");
+                Console.WriteLine($"Idade em decimal: {clienteList[cli].Idade} anos");
+                Console.WriteLine($"Idade em romanos: {clienteList[cli].Romano()}");
+                Console.WriteLine($"Número da Conta: {contasList[cli].Numero}");
+                Console.WriteLine($"Número da Agência: {contasList[cli].agencia.Numero}");
+                Console.WriteLine($"Nome do Banco: {contasList[cli].banco.Nome}");
+                Console.WriteLine($"Número do Banco: {contasList[cli].banco.Numero}");
             }
-
-            Console.WriteLine("Informe o número da agência 1:");
-            int numeroAgencia1 = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Informe o CEP da agência 1:");
-            string cepAgencia1 = Console.ReadLine();
-            Console.WriteLine("Informe o telefone da agência 1:");
-            string telefoneAgencia1 = Console.ReadLine();
-            agencia1 = new Agencia(numeroAgencia1, cepAgencia1, telefoneAgencia1);
-
-            Console.WriteLine("Informe o número da conta 1:");
-            long numeroConta1 = Convert.ToInt64(Console.ReadLine()); // Aqui está o número da conta 1
-            Console.WriteLine("Informe o saldo inicial da conta 1 (maior que 10):");
-            decimal saldoConta1 = Convert.ToDecimal(Console.ReadLine()); // Aqui está o saldo inicial da conta 1
-
-            if (saldoConta1 <= 10)
-            {
-                Console.WriteLine("O saldo da conta 1 deve ser maior que 10.");
-                return;
-            }
-
-            Console.WriteLine("Informe o nome do cliente 2:");
-            string nomeCliente2 = Console.ReadLine();
-            Console.WriteLine("Informe a idade do cliente 2 (maior que 18 anos):");
-            int idadeCliente2 = Convert.ToInt32(Console.ReadLine());
-
-            if (idadeCliente2 <= 18)
-            {
-                Console.WriteLine("A idade do cliente 2 deve ser maior que 18 anos.");
-                return;
-            }
-
-            Console.WriteLine("Informe o CPF do cliente 2 (11 dígitos):");
-            string cpfCliente2 = Console.ReadLine();
-
-            if (cpfCliente2.Length != 11)
-            {
-                Console.WriteLine("O CPF do cliente 2 deve ter 11 dígitos.");
-                return;
-            }
-
-            Console.WriteLine("Informe o número da agência 2:");
-            int numeroAgencia2 = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Informe o CEP da agência 2:");
-            string cepAgencia2 = Console.ReadLine();
-            Console.WriteLine("Informe o telefone da agência 2:");
-            string telefoneAgencia2 = Console.ReadLine();
-            agencia2 = new Agencia(numeroAgencia2, cepAgencia2, telefoneAgencia2);
-
-            Console.WriteLine("Informe o número da conta 2:");
-            long numeroConta2 = Convert.ToInt64(Console.ReadLine()); // Aqui está o número da conta 2
-            Console.WriteLine("Informe o saldo inicial da conta 2 (maior que 10):");
-            decimal saldoConta2 = Convert.ToDecimal(Console.ReadLine()); // Aqui está o saldo inicial da conta 2
-
-            if (saldoConta2 <= 10)
-            {
-                Console.WriteLine("O saldo da conta 2 deve ser maior que 10.");
-                return;
-            }
-
-            Console.WriteLine("Informe o nome do banco:");
-            string nomeBanco = Console.ReadLine();
-            Console.WriteLine("Informe o número do banco:");
-            int numeroBanco = Convert.ToInt32(Console.ReadLine());
-            banco = new Banco(nomeBanco, numeroBanco);
-
-            conta1 = new Conta(numeroConta1, agencia1, banco, saldoConta1);
-            cliente1 = new Cliente(nomeCliente1, idadeCliente1, cpfCliente1);
-
-            conta2 = new Conta(numeroConta2, agencia2, banco, saldoConta2);
-            cliente2 = new Cliente(nomeCliente2, idadeCliente2, cpfCliente2);
         }
 
-        private void MostrarDadosCliente(Cliente cliente, Conta conta, Banco banco, Agencia agencia)
+        void RealizarSaque()
         {
-            Console.WriteLine($"Dados do cliente: {cliente.Nome}, CPF: {cliente.CPF}, Saldo: R${conta.Saldo}");
-            Console.WriteLine($"Idade em decimal: {cliente.Idade} anos");
-            Console.WriteLine($"Idade em romanos: {cliente.Romano()}");
-            Console.WriteLine($"Número da Conta: {conta.Numero}");
-            Console.WriteLine($"Número da Agência: {agencia.Numero}");
-            Console.WriteLine($"Nome do Banco: {banco.Nome}");
-            Console.WriteLine($"Número do Banco: {banco.Numero}");
+            Console.WriteLine($"Qual dos clientes deseja realizar o saque? (de 0 até {cont - 1})");
+            int cli = int.Parse(Console.ReadLine());
+            if (cli < 0 && cli >= cont)
+            {
+                Console.WriteLine("Esse cliente não existe.");
+            }
+            else
+            {
+
+                Console.WriteLine($"Digite o valor do saque da Conta {contasList[cli].Numero}:");
+                decimal valorSaque = Convert.ToDecimal(Console.ReadLine());
+                contasList[cli].Saque(valorSaque);
+                Console.WriteLine($"Saldo da Conta {contasList[cli].Numero} após saque: {contasList[cli].Saldo}");
+            }
         }
 
-        private void RealizarSaque(Conta conta)
+        void AdicionarDinheiro()
         {
-            Console.WriteLine($"Digite o valor do saque da Conta {conta.Numero}:");
-            decimal valorSaque = Convert.ToDecimal(Console.ReadLine());
-            conta.Saque(valorSaque);
-            Console.WriteLine($"Saldo da Conta {conta.Numero} após saque: {conta.Saldo}");
-        }
-
-        private void AdicionarDinheiro(Conta conta)
-        {
-            Console.WriteLine($"Digite o valor a ser adicionado à Conta {conta.Numero}:");
-            decimal valorAdicionar = Convert.ToDecimal(Console.ReadLine());
-            conta.AtualizarSaldo(valorAdicionar);
-            Console.WriteLine($"Saldo da Conta {conta.Numero} após adição: {conta.Saldo}");
-        }
-        public static void Main(string[] args)
-        {
-            Program exec = new Program();
-            exec.Exec();
+            Console.WriteLine($"Qual dos clientes deseja realizar o depósito? (de 0 até {cont - 1})");
+            int cli = int.Parse(Console.ReadLine());
+            if (cli < 0 && cli >= cont)
+            {
+                Console.WriteLine("Esse cliente não existe.");
+            }
+            else
+            {
+                Console.WriteLine($"Digite o valor a ser adicionado à Conta {contasList[cli].Numero}:");
+                decimal valorAdicionar = Convert.ToDecimal(Console.ReadLine());
+                contasList[cli].AtualizarSaldo(valorAdicionar);
+                Console.WriteLine($"Saldo da Conta {contasList[cli].Numero} após adição: {contasList[cli].Saldo}");
+            }
         }
     }
 }

@@ -1,0 +1,176 @@
+void Exec()
+{
+    while (true)
+    {
+        Console.WriteLine("Menu Inicial:");
+        Console.WriteLine("1 - Criar contas");
+        Console.WriteLine("0 - Sair");
+
+        int escolhaInicial = int.Parse(Console.ReadLine());
+
+        switch (escolhaInicial)
+        {
+            case 1:
+                Informacoes();
+                Menu();
+                break;
+            case 0:
+                Console.WriteLine("Saindo do programa.");
+                return;
+            default:
+                Console.WriteLine("Opção inválida.");
+                break;
+        }
+    }
+}
+
+void Menu()
+{
+    bool contasInseridas = true;
+
+    while (true)
+    {
+        int x = 0;
+        Console.WriteLine("Menu Principal:");
+        Console.WriteLine("2 - Saldo Total Geral");
+        Console.WriteLine("3 - Mostrar dados do cliente");
+        Console.WriteLine("4 - Fazer saque");
+        Console.WriteLine("5 - Fazer depósito");
+        Console.WriteLine("0 - Sair");
+
+        int escolha = int.Parse(Console.ReadLine());
+
+        switch (escolha)
+        {
+            case 2:
+                if (contasInseridas)
+                {
+                    decimal saldoTotal = CalcularSaldoTotal(contasList);
+                    Console.WriteLine($"Saldo total geral: {saldoTotal}");
+                }
+                else
+                {
+                    Console.WriteLine("Por favor, insira as informações das contas primeiro.");
+                }
+                break;
+            case 3:
+                if (contasInseridas)
+                {
+                    MostrarDadosCliente(cliente1, conta1, banco, agencia1);
+                }
+                else
+                {
+                    Console.WriteLine("Por favor, insira as informações das contas primeiro.");
+                }
+                break;
+                }
+                break;
+            case 4:
+                if (conta != null)
+                {
+                    RealizarSaque(conta1);
+                }
+                else
+                {
+                    Console.WriteLine("Conta 1 não está definida.");
+                }
+                break;
+            case 5:
+                if (conta1 != null)
+                {
+                    AdicionarDinheiro(conta1);
+                }
+                else
+                {
+                    Console.WriteLine("Conta 1 não está definida.");
+                }
+                break;
+            case 0:
+                Console.WriteLine("Saindo do programa.");
+                return;
+            default:
+                Console.WriteLine("Opção inválida.");
+                break;
+        }
+    }
+}
+void Informacoes()
+{
+    for(int x = 0; x <= cont; x++) { 
+
+        Console.WriteLine("Informe o nome do cliente:");
+        string nomeCliente = Console.ReadLine();
+        Console.WriteLine("Informe a idade do cliente (maior que 18 anos):");
+        int idadeCliente = Convert.ToInt32(Console.ReadLine());
+
+        if (idadeCliente <= 18)
+        {
+            Console.WriteLine("A idade do cliente deve ser maior que 18 anos.");
+            return;
+        }
+
+        Console.WriteLine("Informe o CPF do cliente (11 dígitos):");
+        string cpfCliente = Console.ReadLine();
+
+        if (cpfCliente.Length != 11)
+        {
+            Console.WriteLine("O CPF do cliente deve ter 11 dígitos.");
+            return;
+        }
+
+        Console.WriteLine("Informe o número da agência :");
+        int numeroAgencia = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine("Informe o CEP da agência:");
+        string cepAgencia = Console.ReadLine();
+        Console.WriteLine("Informe o telefone da agência:");
+        string telefoneAgencia = Console.ReadLine();
+        agencia = new Agencia(numeroAgencia, cepAgencia, telefoneAgencia);
+
+        Console.WriteLine("Informe o número da conta:");
+        long numeroConta = Convert.ToInt64(Console.ReadLine()); 
+        Console.WriteLine("Informe o saldo inicial da conta (maior que 10):");
+        decimal saldoConta = Convert.ToDecimal(Console.ReadLine()); 
+
+        if (saldoConta <= 10)
+        {
+            Console.WriteLine("O saldo da conta deve ser maior que 10.");
+            return;
+        }
+
+        Console.WriteLine("Informe o nome do banco:");
+        string nomeBanco = Console.ReadLine();
+        Console.WriteLine("Informe o número do banco:");
+        int numeroBanco = Convert.ToInt32(Console.ReadLine());
+        banco = new Banco(nomeBanco, numeroBanco);
+
+        conta1 = new Conta(numeroConta1, agencia1, banco, saldoConta1);
+        cliente1 = new Cliente(nomeCliente1, idadeCliente1, cpfCliente1);
+    }
+}
+
+void MostrarDadosCliente(Cliente cliente, Conta conta, Banco banco, Agencia agencia)
+{
+    Console.WriteLine($"Dados do cliente: {cliente.Nome}, CPF: {cliente.CPF}, Saldo: R${conta.Saldo}");
+    Console.WriteLine($"Idade em decimal: {cliente.Idade} anos");
+    Console.WriteLine($"Idade em romanos: {cliente.Romano()}");
+    Console.WriteLine($"Número da Conta: {conta.Numero}");
+    Console.WriteLine($"Número da Agência: {agencia.Numero}");
+    Console.WriteLine($"Nome do Banco: {banco.Nome}");
+    Console.WriteLine($"Número do Banco: {banco.Numero}");
+}
+
+void RealizarSaque(Conta conta)
+{
+    Console.WriteLine($"Digite o valor do saque da Conta {conta.Numero}:");
+    decimal valorSaque = Convert.ToDecimal(Console.ReadLine());
+    conta.Saque(valorSaque);
+    Console.WriteLine($"Saldo da Conta {conta.Numero} após saque: {conta.Saldo}");
+}
+
+void AdicionarDinheiro(Conta conta)
+{
+    Console.WriteLine($"Digite o valor a ser adicionado à Conta {conta.Numero}:");
+    decimal valorAdicionar = Convert.ToDecimal(Console.ReadLine());
+    conta.AtualizarSaldo(valorAdicionar);
+    Console.WriteLine($"Saldo da Conta {conta.Numero} após adição: {conta.Saldo}");
+}

@@ -20,7 +20,7 @@ class Program
             while (true)
             {
                 Console.WriteLine("Menu Inicial:");
-                Console.WriteLine("1 - Criar contas");
+                Console.WriteLine("1 - Preencher as contas");
                 Console.WriteLine("0 - Sair");
 
                 int escolhaInicial = int.Parse(Console.ReadLine());

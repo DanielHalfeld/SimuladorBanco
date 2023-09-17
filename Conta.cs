@@ -59,7 +59,7 @@ namespace SimuladorBanco
             return Saldo;
         }
 
-        public void AtualizarSaldo(decimal novoSaldo)
+        public void Deposito(decimal novoSaldo)
         {
             if (novoSaldo <= 10.00m)
             {
